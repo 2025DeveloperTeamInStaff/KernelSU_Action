@@ -91,6 +91,40 @@ jobs:
         sudo apt-get install git ccache automake flex lzop bison gperf build-essential zip curl zlib1g-dev g++-multilib libxml2-utils bzip2 libbz2-dev libbz2-1.0 libghc-bzlib-dev squashfs-tools pngcrush schedtool dpkg-dev liblz4-tool make optipng maven libssl-dev pwgen libswitch-perl policycoreutils minicom libxml-sax-base-perl libxml-simple-perl bc libc6-dev-i386 lib32ncurses5-dev libx11-dev lib32z-dev libgl1-mesa-dev xsltproc unzip device-tree-compiler python2 python3
         mkdir -p $GITHUB_WORKSPACE/kernel_workspace
 
+    - name: Download kernel source
+      run: |
+        cd $GITHUB_WORKSPACE/kernel_workspace
+        git clone --recursive ${{ env.KERNEL_SOURCE }} -b ${{ env.KERNEL_SOURCE_BRANCH }} android-kernel --depth=1
+        if [[ ${{ env.ADD_LOCALVERSION_TO_FILENAME }} == 'true' ]]; then
+          echo "LOCALVERSION=$(cat android-kernel/localversion)" >> $GITHUB_ENV
+        fi
+
+    - name: Setup SukiSu
+      if: env.ENABLE_KERNELSU == 'true'
+      run: |
+        cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel
+        # curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s nongki
+        curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s susfs-dev
+        git clone https://gitlab.com/simonpunk/susfs4ksu.git -b kernel-4.14
+        
+        cp susfs4ksu/kernel_patches/50_add_susfs_in_kernel-4.14.patch ./
+        cp susfs4ksu/kernel_patches/KernelSU/10_enable_susfs_for_ksu.patch .
+        cp susfs4ksu/kernel_patches/fs/* ./fs/
+        cp susfs4ksu/kernel_patches/include/linux/* ./include/linux/
+        patch -R -p1 < 50_add_susfs_in_kernel-4.14.patch || true
+        patch -R -p1 < 10_enable_susfs_for_ksu.patch
+
+        echo "Applying patches stage 2"
+        
+        git clone https://github.com/ShirkNeko/SukiSU_patch.git
+        cp SukiSU_patch/hooks/syscall_hooks.patch ./
+        cp SukiSU_patch/hooks/69_hide_stuff.patch ./
+        patch -R -p1 -F 3 < syscall_hooks.patch
+        patch -R -p1 -F 3 < 69_hide_stuff.patch
+        
+        KSU_VERSION=$(cd KernelSU && expr $(/usr/bin/git rev-list --count HEAD) + 10200)
+        echo "UPLOADNAME=-SukiSU_$KSU_VERSION" >> $GITHUB_ENV
+
     - name: Download Clang-aosp
       if: env.USE_CUSTOM_CLANG != 'true'
       run: |
@@ -179,14 +213,7 @@ jobs:
         cd $GITHUB_WORKSPACE/kernel_workspace
         git clone https://android.googlesource.com/platform/system/tools/mkbootimg tools -b master-kernel-build-2022 --depth=1
 
-    - name: Download kernel source
-      run: |
-        cd $GITHUB_WORKSPACE/kernel_workspace
-        git clone --recursive ${{ env.KERNEL_SOURCE }} -b ${{ env.KERNEL_SOURCE_BRANCH }} android-kernel --depth=1
-        if [[ ${{ env.ADD_LOCALVERSION_TO_FILENAME }} == 'true' ]]; then
-          echo "LOCALVERSION=$(cat android-kernel/localversion)" >> $GITHUB_ENV
-        fi
-
+  
     - name: Download source boot image
       if: env.BUILD_BOOT_IMG == 'true'
       run: |
@@ -196,32 +223,6 @@ jobs:
             echo "FORMAT_MKBOOTING=$(echo `tools/unpack_bootimg.py --boot_img=boot-source.img --format mkbootimg`)" >> $GITHUB_ENV
             echo "HAVE_SOURCE_BOOT_IMAGE=true" >> $GITHUB_ENV
         fi
-
-    - name: Setup SukiSu
-      if: env.ENABLE_KERNELSU == 'true'
-      run: |
-        cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel
-        # curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s nongki
-        curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s susfs-dev
-        git clone https://gitlab.com/simonpunk/susfs4ksu.git -b kernel-4.14
-        
-        cp susfs4ksu/kernel_patches/50_add_susfs_in_kernel-4.14.patch ./
-        cp susfs4ksu/kernel_patches/KernelSU/10_enable_susfs_for_ksu.patch .
-        cp susfs4ksu/kernel_patches/fs/* ./fs/
-        cp susfs4ksu/kernel_patches/include/linux/* ./include/linux/
-        patch -p1 < 50_add_susfs_in_kernel-4.14.patch || true
-        patch -p1 < 10_enable_susfs_for_ksu.patch
-
-        echo "Applying patches stage 2"
-        
-        git clone https://github.com/ShirkNeko/SukiSU_patch.git
-        cp SukiSU_patch/hooks/syscall_hooks.patch ./
-        cp SukiSU_patch/hooks/69_hide_stuff.patch ./
-        patch -p1 -F 3 < syscall_hooks.patch
-        patch -p1 -F 3 < 69_hide_stuff.patch
-        
-        KSU_VERSION=$(cd KernelSU && expr $(/usr/bin/git rev-list --count HEAD) + 10200)
-        echo "UPLOADNAME=-SukiSU_$KSU_VERSION" >> $GITHUB_ENV
 
     - name: Setup Configuration for Kernel
       run: |
