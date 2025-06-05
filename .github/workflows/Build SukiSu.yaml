@@ -117,11 +117,11 @@ jobs:
 
         echo "Applying patches stage 2"
         
-        git clone https://github.com/ShirkNeko/SukiSU_patch.git
+        git clone https://github.com/ShirkNeko/SukiSU_patch.git SukiSU_patch
         cp SukiSU_patch/hooks/syscall_hooks.patch ./
-        cp SukiSU_patch/hooks/69_hide_stuff.patch ./
-        patch -p1 -F 3 < syscall_hooks.patch
-        patch -p1 -F 3 < 69_hide_stuff.patch
+        cp SukiSU_patch/69_hide_stuff.patch ./
+        patch -p1 -F 3 < syscall_hooks.patch || true
+        patch -p1 -F 3 < 69_hide_stuff.patch || true
         
         KSU_VERSION=$(cd KernelSU && expr $(/usr/bin/git rev-list --count HEAD) + 10200)
         echo "UPLOADNAME=-SukiSU_$KSU_VERSION" >> $GITHUB_ENV
