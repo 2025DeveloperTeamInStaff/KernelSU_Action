@@ -185,8 +185,6 @@ jobs:
         git clone --recursive ${{ env.KERNEL_SOURCE }} -b ${{ env.KERNEL_SOURCE_BRANCH }} android-kernel --depth=1
         if [[ ${{ env.ADD_LOCALVERSION_TO_FILENAME }} == 'true' ]]; then
           echo "LOCALVERSION=$(cat android-kernel/localversion)" >> $GITHUB_ENV
-        else
-          echo "LOCALVERSION=" >> $GITHUB_ENV
         fi
 
     - name: Download source boot image
