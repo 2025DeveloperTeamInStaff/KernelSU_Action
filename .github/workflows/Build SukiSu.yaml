@@ -113,7 +113,7 @@ jobs:
         cp susfs4ksu/kernel_patches/include/linux/* ./include/linux/
         patch -c -p1 < 50_add_susfs_in_kernel-4.14.patch || true
         cd ./KernelSU
-        patch -c -R -p1 < 10_enable_susfs_for_ksu.patch
+        patch -c -R -p1 < 10_enable_susfs_for_ksu.patch || true
 
         echo "Applying patches stage 2"
         
