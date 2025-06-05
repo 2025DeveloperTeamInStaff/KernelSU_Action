@@ -108,15 +108,15 @@ jobs:
         git clone https://gitlab.com/simonpunk/susfs4ksu.git -b kernel-4.14
         
         cp susfs4ksu/kernel_patches/50_add_susfs_in_kernel-4.14.patch ./
-        cp susfs4ksu/kernel_patches/KernelSU/10_enable_susfs_for_ksu.patch ./KernelSU
+        # cp susfs4ksu/kernel_patches/KernelSU/10_enable_susfs_for_ksu.patch ./KernelSU
         cp susfs4ksu/kernel_patches/fs/* ./fs/
         cp susfs4ksu/kernel_patches/include/linux/* ./include/linux/
         patch -c -p1 < 50_add_susfs_in_kernel-4.14.patch || true
-        cd ./KernelSU
-        patch -c -R -p1 < 10_enable_susfs_for_ksu.patch || true
+        # cd ./KernelSU
+        # patch -c -R -p1 < 10_enable_susfs_for_ksu.patch || true
 
         echo "Applying patches stage 2"
-        cd ..
+        # cd ..
         git clone https://github.com/ShirkNeko/SukiSU_patch.git SukiSU_patch
         cp SukiSU_patch/hooks/syscall_hooks.patch ./
         cp SukiSU_patch/69_hide_stuff.patch ./
