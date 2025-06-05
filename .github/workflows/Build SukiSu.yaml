@@ -111,16 +111,16 @@ jobs:
         cp susfs4ksu/kernel_patches/KernelSU/10_enable_susfs_for_ksu.patch .
         cp susfs4ksu/kernel_patches/fs/* ./fs/
         cp susfs4ksu/kernel_patches/include/linux/* ./include/linux/
-        patch -R -p1 < 50_add_susfs_in_kernel-4.14.patch || true
-        patch -R -p1 < 10_enable_susfs_for_ksu.patch
+        patch -c -p1 < 50_add_susfs_in_kernel-4.14.patch || true
+        patch -c -p1 < 10_enable_susfs_for_ksu.patch
 
         echo "Applying patches stage 2"
         
         git clone https://github.com/ShirkNeko/SukiSU_patch.git
         cp SukiSU_patch/hooks/syscall_hooks.patch ./
         cp SukiSU_patch/hooks/69_hide_stuff.patch ./
-        patch -R -p1 -F 3 < syscall_hooks.patch
-        patch -R -p1 -F 3 < 69_hide_stuff.patch
+        patch -p1 -F 3 < syscall_hooks.patch
+        patch -p1 -F 3 < 69_hide_stuff.patch
         
         KSU_VERSION=$(cd KernelSU && expr $(/usr/bin/git rev-list --count HEAD) + 10200)
         echo "UPLOADNAME=-SukiSU_$KSU_VERSION" >> $GITHUB_ENV
