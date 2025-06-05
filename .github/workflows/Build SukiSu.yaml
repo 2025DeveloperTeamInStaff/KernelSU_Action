@@ -205,10 +205,10 @@ jobs:
         curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s susfs-dev
         git clone https://gitlab.com/simonpunk/susfs4ksu.git -b kernel-4.14
         
-        cp ../susfs4ksu/kernel_patches/ ./50_add_susfs_in_kernel-4.14.patch
-        cp ../susfs4ksu/kernel_patches/KernelSU/10_enable_susfs_for_ksu.patch .
-        cp ../susfs4ksu/kernel_patches/fs/* ./fs/
-        cp ../susfs4ksu/kernel_patches/include/linux/* ./include/linux/
+        cp susfs4ksu/kernel_patches/ ./50_add_susfs_in_kernel-4.14.patch
+        cp susfs4ksu/kernel_patches/KernelSU/10_enable_susfs_for_ksu.patch .
+        cp susfs4ksu/kernel_patches/fs/* ./fs/
+        cp susfs4ksu/kernel_patches/include/linux/* ./include/linux/
         patch -p1 < 50_add_susfs_in_kernel-4.14.patch
         patch -p1 < 10_enable_susfs_for_ksu.patch
         
