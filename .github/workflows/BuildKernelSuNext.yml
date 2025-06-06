@@ -40,8 +40,8 @@ jobs:
             CUSTOM_GCC_32_SOURCE
             CUSTOM_GCC_32_BRANCH
             CUSTOM_GCC_32_BIN
-            ENABLE_KERNELSU
-            KERNELSU_TAG
+            ENABLE_
+            _TAG
             ADD_KPROBES_CONFIG
             DISABLE-LTO
             ADD_OVERLAYFS_CONFIG
@@ -101,7 +101,7 @@ jobs:
         fi
         
     - name: Setup SukiSu
-      if: env.ENABLE_KERNELSU == 'true'
+      if: env.ENABLE_ == 'true'
       run: |
         cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel
         # curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s nongki
@@ -109,15 +109,12 @@ jobs:
         git clone https://gitlab.com/simonpunk/susfs4ksu.git -b kernel-4.14
         
         cp susfs4ksu/kernel_patches/50_add_susfs_in_kernel-4.14.patch ./
-        # cp susfs4ksu/kernel_patches/KernelSU/10_enable_susfs_for_ksu.patch ./KernelSU
         cp susfs4ksu/kernel_patches/fs/* ./fs/
         cp susfs4ksu/kernel_patches/include/linux/* ./include/linux/
         patch -c -p1 < 50_add_susfs_in_kernel-4.14.patch || true
-        # cd ./KernelSU
-        # patch -c -R -p1 < 10_enable_susfs_for_ksu.patch || true
 
-        KSU_VERSION=$(cd KernelSU && expr $(/usr/bin/git rev-list --count HEAD) + 10200)
-        echo "UPLOADNAME=-SukiSU_$KSU_VERSION" >> $GITHUB_ENV
+        KSU_VERSION=$(cd KernelSU-Next && expr $(/usr/bin/git rev-list --count HEAD) + 10200)
+        echo "UPLOADNAME=-KernelSU-Next_$KSU_VERSION" >> $GITHUB_ENV
 
     - name: Download Clang-aosp
       if: env.USE_CUSTOM_CLANG != 'true'
