@@ -101,7 +101,6 @@ jobs:
         fi
         
     - name: Setup KernelSuNext
-      if: env.ENABLE_ == 'true'
       run: |
         cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel
         # curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s nongki
