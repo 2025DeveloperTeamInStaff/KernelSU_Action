@@ -118,9 +118,9 @@ jobs:
         echo "Applying patches stage 2"
         # cd ..
         git clone https://github.com/ShirkNeko/SukiSU_patch.git SukiSU_patch
-        cp SukiSU_patch/hooks/syscall_hooks.patch ./
+        cp SukiSU_patch/4.14/ksu_hooks_4.14.patch ./
         cp SukiSU_patch/69_hide_stuff.patch ./
-        # patch -p1 -F 3 < syscall_hooks.patch || tru
+        # patch -p1 -F 3 < ksu_hooks_4.14.patch || true
         patch -p1 -F 3 < 69_hide_stuff.patch || true
         
         KSU_VERSION=$(cd KernelSU && expr $(/usr/bin/git rev-list --count HEAD) + 10200)
@@ -240,14 +240,14 @@ jobs:
         if [ ${{ env.ADD_KPROBES_CONFIG }} = true -a ${{ env.APPLY_KSU_PATCH }} != true ]; then
             CONFIG_FILE=arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}
             echo "CONFIG_MODULES=y" >> "$CONFIG_FILE"
-            echo "CONFIG_KPROBES=y" >> "$CONFIG_FILE"
-            echo "CONFIG_HAVE_KPROBES=y" >> "$CONFIG_FILE"
-            echo "CONFIG_KPROBE_EVENTS=y" >> "$CONFIG_FILE"
+            # echo "CONFIG_KPROBES=y" >> "$CONFIG_FILE"
+            # echo "CONFIG_HAVE_KPROBES=y" >> "$CONFIG_FILE"
+            # echo "CONFIG_KPROBE_EVENTS=y" >> "$CONFIG_FILE"
             echo "CONFIG_KPM=y" >> "$CONFIG_FILE"
             echo "CONFIG_KALLSYMS=y" >> "$CONFIG_FILE"
             echo "CONFIG_KALLSYMS_ALL=y" >> "$CONFIG_FILE"
             echo "CONFIG_KSU_SUSFS_SUS_SU=n" >> "$CONFIG_FILE"
-           # echo "CONFIG_KSU_MANUAL_HOOK=y" >> "$CONFIG_FILE"
+            echo "CONFIG_KSU_MANUAL_HOOK=y" >> "$CONFIG_FILE"
             echo "CONFIG_KSU_SUSFS=y" >> "$CONFIG_FILE"
             echo "CONFIG_KSU_SUSFS_HAS_MAGIC_MOUNT=y" >> "$CONFIG_FILE"
             echo "CONFIG_KSU_SUSFS_SUS_PATH=y" >> "$CONFIG_FILE"
