@@ -100,12 +100,12 @@ jobs:
           echo "LOCALVERSION=$(cat android-kernel/localversion)" >> $GITHUB_ENV
         fi
         
-    - name: Setup SukiSu
+    - name: Setup KernelSuNext
       if: env.ENABLE_ == 'true'
       run: |
         cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel
         # curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s nongki
-        curl -LSs "https://raw.githubusercontent.com/rifsxd/KernelSU-Next/next/kernel/setup.sh" | bash -
+        curl -LSs "https://raw.githubusercontent.com/rifsxd/KernelSU-Next/next-susfs/kernel/setup.sh" | bash -s next-susfs
         git clone https://gitlab.com/simonpunk/susfs4ksu.git -b kernel-4.14
         
         cp susfs4ksu/kernel_patches/50_add_susfs_in_kernel-4.14.patch ./
@@ -113,8 +113,8 @@ jobs:
         cp susfs4ksu/kernel_patches/include/linux/* ./include/linux/
         patch -c -p1 < 50_add_susfs_in_kernel-4.14.patch || true
 
-        KSU_VERSION=$(cd KernelSU-Next && expr $(/usr/bin/git rev-list --count HEAD) + 10200)
-        echo "UPLOADNAME=-KernelSU-Next_$KSU_VERSION" >> $GITHUB_ENV
+        # KSU_VERSION=$(cd KernelSU-Next && expr $(/usr/bin/git rev-list --count HEAD) + 10200)
+        echo "UPLOADNAME=-KernelSU-Next_KKK" >> $GITHUB_ENV
 
     - name: Download Clang-aosp
       if: env.USE_CUSTOM_CLANG != 'true'
