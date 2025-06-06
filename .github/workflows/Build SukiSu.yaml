@@ -104,7 +104,7 @@ jobs:
       run: |
         cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel
         # curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s nongki
-        curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s susfs-stable
+        curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s susfs-dev
         git clone https://gitlab.com/simonpunk/susfs4ksu.git -b kernel-4.14
         
         cp susfs4ksu/kernel_patches/50_add_susfs_in_kernel-4.14.patch ./
@@ -120,7 +120,7 @@ jobs:
         git clone https://github.com/ShirkNeko/SukiSU_patch.git SukiSU_patch
         cp SukiSU_patch/hooks/syscall_hooks.patch ./
         cp SukiSU_patch/69_hide_stuff.patch ./
-        patch -p1 -F 3 < syscall_hooks.patch || true
+       # patch -p1 -F 3 < syscall_hooks.patch || true
         patch -p1 -F 3 < 69_hide_stuff.patch || true
         
         KSU_VERSION=$(cd KernelSU && expr $(/usr/bin/git rev-list --count HEAD) + 10200)
@@ -240,14 +240,14 @@ jobs:
         if [ ${{ env.ADD_KPROBES_CONFIG }} = true -a ${{ env.APPLY_KSU_PATCH }} != true ]; then
             CONFIG_FILE=arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}
             echo "CONFIG_MODULES=y" >> "$CONFIG_FILE"
-            # echo "CONFIG_KPROBES=y" >> "$CONFIG_FILE"
-            # echo "CONFIG_HAVE_KPROBES=y" >> "$CONFIG_FILE"
-            # echo "CONFIG_KPROBE_EVENTS=y" >> "$CONFIG_FILE"
+            echo "CONFIG_KPROBES=y" >> "$CONFIG_FILE"
+            echo "CONFIG_HAVE_KPROBES=y" >> "$CONFIG_FILE"
+            echo "CONFIG_KPROBE_EVENTS=y" >> "$CONFIG_FILE"
             echo "CONFIG_KPM=y" >> "$CONFIG_FILE"
             echo "CONFIG_KALLSYMS=y" >> "$CONFIG_FILE"
             echo "CONFIG_KALLSYMS_ALL=y" >> "$CONFIG_FILE"
             echo "CONFIG_KSU_SUSFS_SUS_SU=n" >> "$CONFIG_FILE"
-            echo "CONFIG_KSU_MANUAL_HOOK=y" >> "$CONFIG_FILE"
+           # echo "CONFIG_KSU_MANUAL_HOOK=y" >> "$CONFIG_FILE"
             echo "CONFIG_KSU_SUSFS=y" >> "$CONFIG_FILE"
             echo "CONFIG_KSU_SUSFS_HAS_MAGIC_MOUNT=y" >> "$CONFIG_FILE"
             echo "CONFIG_KSU_SUSFS_SUS_PATH=y" >> "$CONFIG_FILE"
