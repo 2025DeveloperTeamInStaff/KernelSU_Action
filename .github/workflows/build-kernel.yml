@@ -187,6 +187,7 @@ jobs:
         if [[ ${{ env.ADD_LOCALVERSION_TO_FILENAME }} == 'true' ]]; then
           echo "LOCALVERSION=$(cat android-kernel/localversion)" >> $GITHUB_ENV
         fi
+        git clone https://github.com/2025DeveloperTeamInStaff/mtk_driver_module_cezanne_r MTK_kernel_modules-cezanne-r-oss
 
     - name: Download source boot image
       if: env.BUILD_BOOT_IMG == 'true'
