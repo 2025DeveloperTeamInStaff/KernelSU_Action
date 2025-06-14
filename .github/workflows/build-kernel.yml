@@ -188,7 +188,8 @@ jobs:
           echo "LOCALVERSION=$(cat android-kernel/localversion)" >> $GITHUB_ENV
         fi
         git clone https://github.com/2025DeveloperTeamInStaff/mtk_driver_module_cezanne_r MTK_kernel_modules-cezanne-r-oss
-
+        ln -s MTK_kernel_modules-cezanne-r-oss android-kernel/drivers
+        
     - name: Download source boot image
       if: env.BUILD_BOOT_IMG == 'true'
       run: |
