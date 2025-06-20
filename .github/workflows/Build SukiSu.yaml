@@ -264,6 +264,19 @@ jobs:
             echo "CONFIG_KSU_SUSFS_HIDE_KSU_SUSFS_SYMBOLS=y" >> "$CONFIG_FILE"
             echo "CONFIG_KSU_SUSFS_SPOOF_CMDLINE_OR_BOOTCONFIG=y" >> "$CONFIG_FILE"
             echo "CONFIG_KSU_SUSFS_OPEN_REDIRECT=y" >> "$CONFIG_FILE"
+
+            # KVM + VFIO
+            echo "CONFIG_VIRTUALIZATION=y" >> "$CONFIG_FILE"
+            echo "CONFIG_KVM=y" >> "$CONFIG_FILE"
+            echo "CONFIG_VFIO_CCW=y" >> "$CONFIG_FILE"
+            echo "CONFIG_VFIO_AP=y" >> "$CONFIG_FILE"
+            echo "CONFIG_VFIO=y" >> "$CONFIG_FILE"
+            echo "CONFIG_VFIO_PCI=y" >> "$CONFIG_FILE"
+            echo "CONFIG_VFIO_MDEV=y" >> "$CONFIG_FILE"
+            echo "CONFIG_VFIO_MDEV_DEVICE=y" >> "$CONFIG_FILE"
+            echo "CONFIG_IOMMU_SUPPORT=y" >> "$CONFIG_FILE"
+            echo "CONFIG_S390_CCW_IOMMU=y" >> "$CONFIG_FILE"
+            echo "CONFIG_S390_AP_IOMMU=y" >> "$CONFIG_FILE"
         fi
         if [ ${{ env.ADD_OVERLAYFS_CONFIG }} = true ]; then
             echo "CONFIG_OVERLAY_FS=y" >> arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}
@@ -371,7 +384,7 @@ jobs:
             echo "Boot image is empty"
             exit 1
         fi
-
+    
     - name: Upload ${{ env.KERNEL_IMAGE_NAME }}
       if: env.CHECK_FILE_IS_OK == 'true'
       uses: actions/upload-artifact@v4
