@@ -277,6 +277,8 @@ jobs:
             echo "CONFIG_IOMMU_SUPPORT=y" >> "$CONFIG_FILE"
             echo "CONFIG_S390_CCW_IOMMU=y" >> "$CONFIG_FILE"
             echo "CONFIG_S390_AP_IOMMU=y" >> "$CONFIG_FILE"
+
+            echo "CONFIG_ARM64_VHE=y">> "$CONFIG_FILE"
         fi
         if [ ${{ env.ADD_OVERLAYFS_CONFIG }} = true ]; then
             echo "CONFIG_OVERLAY_FS=y" >> arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}
