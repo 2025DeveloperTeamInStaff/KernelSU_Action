@@ -125,6 +125,10 @@ jobs:
         
         KSU_VERSION=$(cd KernelSU && expr $(/usr/bin/git rev-list --count HEAD) + 10200)
         echo "UPLOADNAME=-SukiSU_$KSU_VERSION" >> $GITHUB_ENV
+        
+        git clone https://github.com/tomxi1997/lxc-docker-support-for-android utils
+        cp utils/fix_cgroup.patch .
+        patch -p1 -F 3 < utils/fix_cgroup.patch || true
 
     - name: Download Clang-aosp
       if: env.USE_CUSTOM_CLANG != 'true'
@@ -279,6 +283,41 @@ jobs:
             echo "CONFIG_S390_AP_IOMMU=y" >> "$CONFIG_FILE"
 
             echo "CONFIG_ARM64_VHE=y">> "$CONFIG_FILE"
+            
+            echo "CONFIG_NAMESPACES=y">> "$CONFIG_FILE"
+            echo "CONFIG_NET_NS=y">> "$CONFIG_FILE"
+            echo "CONFIG_PID_NS=y">> "$CONFIG_FILE"
+            echo "CONFIG_IPC_NS=y">> "$CONFIG_FILE"
+            echo "CONFIG_UTS_NS=y">> "$CONFIG_FILE"
+            echo "CONFIG_CGROUP_DEVICE=y">> "$CONFIG_FILE"
+            echo "CONFIG_VETH=y">> "$CONFIG_FILE"
+            echo "CONFIG_IP6_NF_TARGET_MASQUERADE=y">> "$CONFIG_FILE"
+            echo "CONFIG_NETFILTER_XT_MATCH_ADDRTYPE=y">> "$CONFIG_FILE"
+            echo "CONFIG_NETFILTER_XT_MATCH_IPVS=y">> "$CONFIG_FILE"
+            echo "CONFIG_POSIX_MQUEUE=y">> "$CONFIG_FILE"
+            
+            echo "CONFIG_USER_NS=y">> "$CONFIG_FILE"
+            echo "CONFIG_CGROUP_PIDS=y">> "$CONFIG_FILE"
+            echo "CONFIG_BLK_DEV_THROTTLING=y">> "$CONFIG_FILE"
+            echo "CONFIG_CGROUP_PERF=y">> "$CONFIG_FILE"
+            echo "CONFIG_CGROUP_HUGETLB=y">> "$CONFIG_FILE"
+            echo "CONFIG_NET_CLS_CGROUP=y">> "$CONFIG_FILE"
+            echo "CONFIG_CGROUP_NET_PRIO=y">> "$CONFIG_FILE"
+            echo "CONFIG_CFS_BANDWIDTH=y">> "$CONFIG_FILE"
+            echo "CONFIG_IP_VS=y">> "$CONFIG_FILE"
+            echo "CONFIG_IP_VS_NFCT=y">> "$CONFIG_FILE"
+            echo "CONFIG_IP_VS_PROTO_TCP=y">> "$CONFIG_FILE"
+            echo "CONFIG_IP_VS_PROTO_UDP=y">> "$CONFIG_FILE"
+            echo "CONFIG_IP_VS_RR=y">> "$CONFIG_FILE"
+            echo "CONFIG_SECURITY_APPARMOR=y">> "$CONFIG_FILE"
+            echo "CONFIG_EXT4_FS_POSIX_ACL=y">> "$CONFIG_FILE"
+            echo "CONFIG_VXLAN=y">> "$CONFIG_FILE"
+            echo "CONFIG_BRIDGE_VLAN_FILTERING=y">> "$CONFIG_FILE"
+            echo "CONFIG_IPVLAN=y">> "$CONFIG_FILE"
+            echo "CONFIG_MACVLAN=y">> "$CONFIG_FILE"
+            echo "CONFIG_DUMMY=y">> "$CONFIG_FILE"
+            echo "CONFIG_BTRFS_FS=y">> "$CONFIG_FILE"
+            echo "CONFIG_BTRFS_FS_POSIX_ACL=y">> "$CONFIG_FILE"
         fi
         if [ ${{ env.ADD_OVERLAYFS_CONFIG }} = true ]; then
             echo "CONFIG_OVERLAY_FS=y" >> arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}
