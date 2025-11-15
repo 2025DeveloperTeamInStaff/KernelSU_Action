@@ -103,7 +103,7 @@ jobs:
       if: env.ENABLE_KERNELSU == 'true'
       run: |
         cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel
-        curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s susfs-To_be_updated
+        curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s susfs-test
         # curl -LSs "https://raw.githubusercontent.com/2025DeveloperTeamInStaff/SukiSU-Ultra/main/kernel/setup.sh" | bash -s susfs-test
         # git clone https://gitlab.com/simonpunk/susfs4ksu.git -b kernel-4.14
         
